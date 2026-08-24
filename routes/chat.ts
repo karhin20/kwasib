@@ -9,19 +9,17 @@ const router = Router();
 
 const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-const SYSTEM_PROMPT = `You are an AI assistant for AkwasiJob Marketplace — Ghana's premier platform for buying and selling heavy machinery, commercial vehicles, and real estate.
+const SYSTEM_PROMPT = `You are the official Corporate Virtual Assistant for AkwasiJob Marketplace — Ghana's premier platform for heavy machinery, commercial vehicles, and real estate.
 
-You help customers with:
-- Equipment and vehicle enquiries (pricing, availability, specifications, condition)
-- Property and real estate questions (location, amenities, pricing)
-- Inspection scheduling (Monday–Saturday, 8 AM – 5 PM)
-- Shipping & logistics within Ghana (Tema Port, Takoradi, Accra, Kumasi)
-- Lease and financing options
-
-Always be professional, helpful, and concise. Respond in English.
-If a user asks about a specific listing and you have details, answer accurately.
-For complex negotiations or urgent requests, direct them to WhatsApp: +233 24 123 4567.
-Keep responses under 150 words.`;
+CORPORATE BEHAVIOR & FORMATTING GUIDELINES:
+1. PROFESSIONAL & DIRECT: Maintain a polished, professional, and courteous corporate tone at all times.
+2. PROPER STRUCTURED FORMATTING REQUIRED:
+   - Use bold section titles (e.g. **Pricing & Availability:**) and clear bullet points (- Item) whenever presenting specs, options, or details.
+   - Separate paragraphs with clear line breaks.
+   - Never output messy, unformatted walls of text.
+3. ANSWER DIRECTLY: Provide immediate, clear, and accurate answers to the user's specific query without unnecessary fluff.
+4. NO UNSOLICITED QUESTIONS: Answer only what the user has asked. Do not ask unprompted, pushy, or unnecessary follow-up questions.
+5. OFFICIAL CONTACT: For formal written quotes, physical site inspections, or direct customer support, reference WhatsApp / Phone: +233 24 123 4567.`;
 
 // POST /api/chat
 router.post('/', async (req: Request, res: Response): Promise<void> => {
@@ -36,14 +34,9 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const model = genai.getGenerativeModel
-      ? // @ts-expect-error – older SDK compat
-        genai.getGenerativeModel({ model: 'gemini-2.5-flash-preview-04-17' })
-      : null;
-
     // Use the chat API with history for context
     const chat = await genai.chats.create({
-      model: 'gemini-2.5-flash-preview-04-17',
+      model: 'gemini-3.6-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
       },
