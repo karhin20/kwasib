@@ -193,11 +193,22 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+import { deleteByUrl } from '../cloudinary.js';
+
 // ─── PATCH /api/listings/:id  (admin only) ─────────────────────────────────
 router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const body = req.body as Record<string, unknown>;
     const updates: Record<string, unknown> = {};
+
+    // If removedImages array is provided, delete those from Cloudinary
+    if (Array.isArray(body.removedImages)) {
+      for (const imgUrl of body.removedImages as string[]) {
+        if (typeof imgUrl === 'string') {
+          deleteByUrl(imgUrl).catch((err) => console.error('Cloudinary delete error:', err));
+        }
+      }
+    }
 
     // Only update fields explicitly provided
     const fieldMap: Record<string, string> = {
@@ -208,6 +219,8 @@ router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promi
       price: 'price',
       currency: 'currency',
       priceFormatted: 'price_formatted',
+      priceUsd: 'price_usd',
+      pricePeriod: 'price_period',
       featured: 'featured',
       recentlyReduced: 'recently_reduced',
       image: 'image',
@@ -221,16 +234,23 @@ router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promi
       bodyType: 'body_type',
       make: 'make',
       model: 'model',
+      tonnage: 'tonnage',
+      weight: 'weight',
       fuelType: 'fuel_type',
       transmission: 'transmission',
       condition: 'condition',
       specs: 'specs',
       beds: 'beds',
       baths: 'baths',
+      showers: 'showers',
       sqm: 'sqm',
+      floors: 'floors',
       transactionType: 'transaction_type',
       propertyType: 'property_type',
+      parking: 'parking',
+      conditioning: 'conditioning',
       features: 'features',
+      layoutDetails: 'layout_details',
       seller: 'seller',
     };
 
@@ -263,6 +283,27 @@ router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promi
 // ─── DELETE /api/listings/:id  (admin only) ────────────────────────────────
 router.delete('/:id', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    // 1. Fetch listing details to get image and gallery URLs
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('image, gallery')
+      .eq('id', req.params.id)
+      .single();
+
+    if (listing) {
+      const imagesToDelete: string[] = [];
+      if (listing.image) imagesToDelete.push(listing.image);
+      if (Array.isArray(listing.gallery)) {
+        imagesToDelete.push(...listing.gallery);
+      }
+
+      // Delete from Cloudinary asynchronously
+      for (const imgUrl of imagesToDelete) {
+        deleteByUrl(imgUrl).catch((err) => console.error('Cloudinary delete error on listing removal:', err));
+      }
+    }
+
+    // 2. Delete from Supabase
     const { error } = await supabase
       .from('listings')
       .delete()

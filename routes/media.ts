@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
-import { uploadBuffer } from '../cloudinary.js';
+import { uploadBuffer, deleteByUrl, deleteByPublicId } from '../cloudinary.js';
 
 const router = Router();
 
@@ -39,5 +39,30 @@ router.post(
     }
   }
 );
+
+// DELETE /api/media/delete
+// Accepts { url?: string, public_id?: string }
+router.post('/delete', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { url, public_id } = req.body as { url?: string; public_id?: string };
+
+    if (!url && !public_id) {
+      res.status(400).json({ error: 'url or public_id is required' });
+      return;
+    }
+
+    let success = false;
+    if (public_id) {
+      success = await deleteByPublicId(public_id);
+    } else if (url) {
+      success = await deleteByUrl(url);
+    }
+
+    res.json({ success, message: success ? 'Image deleted from Cloudinary' : 'Image not found or delete skipped' });
+  } catch (err) {
+    console.error('Media delete error:', err);
+    res.status(500).json({ error: 'Failed to delete image from Cloudinary' });
+  }
+});
 
 export default router;
