@@ -9,6 +9,8 @@ import listingsRouter from './routes/listings.js';
 import mediaRouter from './routes/media.js';
 import chatRouter from './routes/chat.js';
 import enquiriesRouter from './routes/enquiries.js';
+import subscriptionsRouter from './routes/subscriptions.js';
+import smsRouter from './routes/sms.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -54,6 +56,12 @@ app.use('/chat', chatRouter);
 
 app.use('/api/enquiries', enquiriesRouter);
 app.use('/enquiries', enquiriesRouter);
+
+app.use('/api/subscriptions', subscriptionsRouter);
+app.use('/subscriptions', subscriptionsRouter);
+
+app.use('/api/sms', smsRouter);
+app.use('/sms', smsRouter);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get(['/api/health', '/health', '/'], (_req, res) => {
