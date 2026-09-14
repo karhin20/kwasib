@@ -40,6 +40,50 @@ router.get('/', requireAuth, async (_req: AuthRequest, res: Response): Promise<v
   }
 });
 
+// ─── POST /api/enquiries (public quote / enquiry submission) ────────────────
+router.post('/', async (req: Request, res: Response): Promise<void> => {
+  const { customerName, phone, email, category, source, message, itemTitle, listingId } =
+    req.body as {
+      customerName?: string;
+      phone?: string;
+      email?: string;
+      category?: string;
+      source?: string;
+      message?: string;
+      itemTitle?: string;
+      listingId?: string;
+    };
+
+  if (!customerName || !phone || !message) {
+    res.status(400).json({ error: 'customerName, phone, and message are required' });
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('enquiries')
+      .insert({
+        customer_name: customerName,
+        phone,
+        email: email ?? null,
+        category: category ?? 'Service Quote',
+        source: source ?? 'form',
+        message,
+        item_title: itemTitle ?? null,
+        listing_id: listingId ?? null,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    res.status(201).json({ success: true, id: data.id });
+  } catch (err) {
+    console.error('POST /enquiries error:', err);
+    res.status(500).json({ error: 'Failed to create enquiry' });
+  }
+});
+
 // ─── DELETE /api/enquiries/:id  (admin only) ───────────────────────────────
 router.delete('/:id', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {

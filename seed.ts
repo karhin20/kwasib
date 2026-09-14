@@ -81,8 +81,8 @@ const LISTINGS = [
     ],
     seller: {
       name: 'E. Wells Realty',
-      phone: '+233 30 278 0090',
-      whatsapp: '+233 24 412 3456',
+      phone: '0247111605',
+      whatsapp: '+233594594245',
       verified: true,
       location: 'Ridge & Airport Residential, Accra',
     },

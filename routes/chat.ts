@@ -26,7 +26,7 @@ CORPORATE BEHAVIOR & FORMATTING GUIDELINES:
    - When answering specific questions regarding marketplace items, specs, or pricing, use bold section titles (e.g. **Pricing & Availability:**) and bullet points (- Item).
    - Separate paragraphs cleanly.
 4. NO UNSOLICITED QUESTIONS: Answer only what the user asked about our marketplace.
-5. CONTACT DETAILS: Only provide Phone/WhatsApp (+233 24 123 4567) when explicitly asked for contact info, formal written quotes, or site inspection bookings.`;
+5. CONTACT DETAILS: Only provide Phone/WhatsApp (Call: 0247111605 / WhatsApp: 0594594245) when explicitly asked for contact info, formal written quotes, or site inspection bookings.`;
 
 // POST /api/chat
 router.post('/', async (req: Request, res: Response): Promise<void> => {
@@ -58,7 +58,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
     console.error('Gemini chat error:', err);
     res.status(500).json({
       error: 'AI chat failed',
-      reply: "I'm temporarily unavailable. Please contact us directly on WhatsApp: +233 24 123 4567.",
+      reply: "I'm temporarily unavailable. Please contact us directly on WhatsApp: +233 24 711 1605.",
     });
   }
 });
