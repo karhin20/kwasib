@@ -32,7 +32,7 @@ router.post('/send', requireAuth, async (req: AuthRequest, res: Response): Promi
     }
 
     const apiKey = process.env.ARKESEL_API_KEY;
-    const defaultSender = process.env.ARKESEL_SENDER_ID || 'Akwasi';
+    const defaultSender = process.env.ARKESEL_SENDER_ID || 'Akwasi Job';
     const finalSender = (senderId || defaultSender).slice(0, 11);
 
     // Clean recipient phone numbers (ensure format like +233...)

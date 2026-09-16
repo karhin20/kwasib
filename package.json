@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch index.ts",
     "start": "tsx index.ts",
+    "build": "tsc",
     "seed": "tsx seed.ts"
   },
   "dependencies": {

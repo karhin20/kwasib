@@ -11,6 +11,7 @@ import chatRouter from './routes/chat.js';
 import enquiriesRouter from './routes/enquiries.js';
 import subscriptionsRouter from './routes/subscriptions.js';
 import smsRouter from './routes/sms.js';
+import servicesRouter from './routes/services.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -62,6 +63,9 @@ app.use('/subscriptions', subscriptionsRouter);
 
 app.use('/api/sms', smsRouter);
 app.use('/sms', smsRouter);
+
+app.use('/api/services', servicesRouter);
+app.use('/services', servicesRouter);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get(['/api/health', '/health', '/'], (_req, res) => {
