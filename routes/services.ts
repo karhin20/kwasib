@@ -20,6 +20,7 @@ const DEFAULT_SERVICES = [
     ],
     icon: 'Bug',
     image: 'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=1200&q=80',
+    gallery: [] as string[],
     coverage: 'Greater Accra, Ashanti & Western Regions',
     is_active: true,
     created_at: new Date().toISOString(),
@@ -38,6 +39,7 @@ const DEFAULT_SERVICES = [
     ],
     icon: 'Building2',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+    gallery: [] as string[],
     coverage: 'Nationwide (Accra, Kumasi, Takoradi)',
     is_active: true,
     created_at: new Date().toISOString(),
@@ -56,6 +58,7 @@ const DEFAULT_SERVICES = [
     ],
     icon: 'Truck',
     image: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1200&q=80',
+    gallery: [] as string[],
     coverage: 'Ghana Nationwide & ECOWAS Corridor',
     is_active: true,
     created_at: new Date().toISOString(),
@@ -76,6 +79,7 @@ function mapServiceRow(row: any) {
     features: Array.isArray(row.features) ? row.features : [],
     icon: row.icon || 'ShieldCheck',
     image: row.image || '',
+    gallery: Array.isArray(row.gallery) ? row.gallery : [],
     coverage: row.coverage || 'Ghana Nationwide',
     isActive: row.is_active ?? true,
     createdAt: row.created_at || new Date().toISOString(),
@@ -128,7 +132,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 // ─── POST /api/services (Admin only) ──────────────────────────────────────────
 router.post('/', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { title, category, description, features, icon, image, coverage, isActive } = req.body;
+    const { title, category, description, features, icon, image, gallery, coverage, isActive } = req.body;
 
     if (!title || !description) {
       res.status(400).json({ error: 'Title and description are required' });
@@ -148,6 +152,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response): Promise<v
       features: Array.isArray(features) ? features : [],
       icon: icon ? String(icon).trim() : 'ShieldCheck',
       image: image ? String(image).trim() : '',
+      gallery: Array.isArray(gallery) ? gallery : [],
       coverage: coverage ? String(coverage).trim() : 'Ghana Nationwide',
       is_active: isActive !== false,
       updated_at: new Date().toISOString(),
@@ -186,7 +191,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response): Promise<v
 router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { title, category, description, features, icon, image, coverage, isActive } = req.body;
+    const { title, category, description, features, icon, image, gallery, coverage, isActive } = req.body;
 
     const updates: Record<string, any> = {
       updated_at: new Date().toISOString(),
@@ -198,6 +203,7 @@ router.patch('/:id', requireAuth, async (req: AuthRequest, res: Response): Promi
     if (features !== undefined) updates.features = Array.isArray(features) ? features : [];
     if (icon !== undefined) updates.icon = String(icon).trim();
     if (image !== undefined) updates.image = String(image).trim();
+    if (gallery !== undefined) updates.gallery = Array.isArray(gallery) ? gallery : [];
     if (coverage !== undefined) updates.coverage = String(coverage).trim();
     if (isActive !== undefined) updates.is_active = Boolean(isActive);
 
