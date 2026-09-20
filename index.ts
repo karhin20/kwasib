@@ -12,6 +12,7 @@ import enquiriesRouter from './routes/enquiries.js';
 import subscriptionsRouter from './routes/subscriptions.js';
 import smsRouter from './routes/sms.js';
 import servicesRouter from './routes/services.js';
+import blogRouter from './routes/blog.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -66,6 +67,9 @@ app.use('/sms', smsRouter);
 
 app.use('/api/services', servicesRouter);
 app.use('/services', servicesRouter);
+
+app.use('/api/blog', blogRouter);
+app.use('/blog', blogRouter);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get(['/api/health', '/health', '/'], (_req, res) => {
