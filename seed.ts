@@ -503,7 +503,55 @@ async function seed() {
   }
   console.log(`✅ ${LISTINGS.length} listings seeded.\n`);
 
-  // ── 2. Create admin user ───────────────────────────────────────────────────
+  // ── 2. Upsert blog posts ───────────────────────────────────────────────────
+  const BLOG_POSTS = [
+    {
+      id: 'blog-1',
+      title: 'Essential Pre-Purchase Checklist for Heavy Machinery in Ghana',
+      slug: 'heavy-machinery-pre-purchase-checklist-ghana',
+      category: 'Machinery & Equipment',
+      excerpt: 'Navigating hydraulic pressure testing, hour-meter verification, and customs clearing documentation when acquiring excavators and bulldozers in West Africa.',
+      content: 'Acquiring heavy equipment such as excavators, wheel loaders, and motor graders represents a major capital expenditure...',
+      image: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=1200&q=80',
+      gallery: JSON.stringify(['https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=800&q=80']),
+      author: 'Ing. Kwame Mensah',
+      author_role: 'Senior Plant Manager',
+      read_time: '5 min read',
+      tags: JSON.stringify(['Heavy Machinery', 'CAT', 'Equipment Inspection', 'Ghana Construction']),
+      featured: true,
+      published: true,
+      published_at: new Date().toISOString(),
+      views: 342,
+    },
+    {
+      id: 'blog-2',
+      title: 'EPA Ghana Fumigation Compliance Standards for Warehouses & Storage',
+      slug: 'epa-ghana-fumigation-compliance-standards-storage',
+      category: 'Pest Control & Fumigation',
+      excerpt: 'Understanding mandatory Environmental Protection Agency (EPA) pest control requirements for cocoa sheds, grain silos, shipping containers, and commercial plazas.',
+      content: 'Pest management in tropical commercial facilities is not merely about comfort—it is a legal and regulatory requirement in Ghana...',
+      image: 'https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&w=1200&q=80',
+      gallery: JSON.stringify([]),
+      author: 'Dr. Abena Osei',
+      author_role: 'Environmental Health Lead',
+      read_time: '4 min read',
+      tags: JSON.stringify(['Fumigation', 'EPA Compliance', 'Warehouse Safety', 'Pest Control']),
+      featured: false,
+      published: true,
+      published_at: new Date().toISOString(),
+      views: 189,
+    },
+  ];
+
+  console.log(`Seeding ${BLOG_POSTS.length} blog articles...`);
+  const { error: blogSeedErr } = await supabase.from('blog_posts').upsert(BLOG_POSTS, { onConflict: 'id' });
+  if (blogSeedErr) {
+    console.warn('⚠️ Blog post seed note:', blogSeedErr.message);
+  } else {
+    console.log(`✅ ${BLOG_POSTS.length} blog posts seeded.\n`);
+  }
+
+  // ── 3. Create admin user ───────────────────────────────────────────────────
   const username = process.env.ADMIN_USERNAME ?? 'admin';
   const password = process.env.ADMIN_PASSWORD ?? 'admin123';
 
